@@ -6,7 +6,7 @@ spring:
   profiles:
     active: local
   redis:
-    host: localhost
+    host: brushmon-redis-dev.nu36ue.0001.apn2.cache.amazonaws.com
     password:
     port: 6379
   datasource:
