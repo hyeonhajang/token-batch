@@ -4,7 +4,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
   profiles:
-    active: local
+    active: dev
   redis:
     host: brushmon-redis-dev.nu36ue.0001.apn2.cache.amazonaws.com
     password:
