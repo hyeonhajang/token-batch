@@ -38,14 +38,4 @@ public class TokenGroup implements Serializable {
   public void postponeExpiry() {
     expireTime = new DateTime().plusDays(30).getMillis();
   }
-
-  @Override
-  public String toString() {
-    return "TokenGroup{" +
-        "accessToken='" + accessToken + '\'' +
-        ", refreshToken='" + refreshToken + '\'' +
-        ", expireTime=" + expireTime +
-        ", email='" + email + '\'' +
-        '}';
-  }
 }

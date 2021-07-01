@@ -57,12 +57,20 @@ public class ExpireTokenJobConfiguration {
             throw new RuntimeException("not supported tokenType");
           }
 
-          TokenGroup refreshToken = redisComponent.get(token, tokenType);
-          TokenGroup accessToken = redisComponent.get(refreshToken.getAccessToken(), OAuth.OAUTH_ACCESS_TOKEN);
+          TokenGroup refreshToken;
+          TokenGroup accessToken;
+
+          if (tokenType.equals(OAuth.OAUTH_REFRESH_TOKEN)) {
+            refreshToken = redisComponent.get(token, tokenType);
+            accessToken = redisComponent.get(refreshToken.getAccessToken(), OAuth.OAUTH_ACCESS_TOKEN);
+          } else {
+            accessToken = redisComponent.get(token, tokenType);
+            refreshToken = redisComponent.get(accessToken.getRefreshToken(), OAuth.OAUTH_REFRESH_TOKEN);
+          }
 
           log.info("current token information");
-          log.info("refresh token : {}", refreshToken.toString());
-          log.info("access token : {}", accessToken.toString());
+          log.info("refresh token - accessToken : {}, refreshToken : {}, expireTime : {}, email : {}, ", refreshToken.getAccessToken(), refreshToken.getRefreshToken(), refreshToken.getExpireTime(), refreshToken.getEmail());
+          log.info("access token - accessToken : {}, refreshToken : {}, expireTime : {}, email : {}, ", accessToken.getAccessToken(), accessToken.getRefreshToken(), accessToken.getExpireTime(), accessToken.getEmail());
 
           long now = System.currentTimeMillis();
 
@@ -76,8 +84,8 @@ public class ExpireTokenJobConfiguration {
           TokenGroup updatedAccessToken = redisComponent.get(refreshToken.getAccessToken(), OAuth.OAUTH_ACCESS_TOKEN);
 
           log.info("after change token information");
-          log.info("refresh token : {}", updatedRefreshToken.toString());
-          log.info("access token : {}", updatedAccessToken.toString());
+          log.info("refresh token - accessToken : {}, refreshToken : {}, expireTime : {}, email : {}, ", updatedRefreshToken.getAccessToken(), updatedRefreshToken.getRefreshToken(), updatedRefreshToken.getExpireTime(), updatedRefreshToken.getEmail());
+          log.info("access token - accessToken : {}, refreshToken : {}, expireTime : {}, email : {}, ", updatedAccessToken.getAccessToken(), updatedAccessToken.getRefreshToken(), updatedAccessToken.getExpireTime(), updatedAccessToken.getEmail());
 
           return RepeatStatus.FINISHED;
         }).build();
